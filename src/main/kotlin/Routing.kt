@@ -1,6 +1,4 @@
-package com.android
-
--server
+package com.android.server
 
 import io.ktor.server.application.*
 import io.ktor.server.response.*
