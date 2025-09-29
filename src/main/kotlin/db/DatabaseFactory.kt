@@ -1,4 +1,4 @@
-package com.android.server
+package com.android.server.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -13,7 +13,7 @@ object DatabaseFactory {
 
     fun init() {
         val ds = hikari()
-        db = Database.connect(ds)
+        db = Database.Companion.connect(ds)
     }
 
     private fun hikari(): DataSource {

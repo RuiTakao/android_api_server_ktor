@@ -1,5 +1,6 @@
-package com.android.server
+package com.android.server.db
 
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 
 object Todos: Table("todos") {
@@ -13,7 +14,7 @@ object Todos: Table("todos") {
     override val primaryKey = PrimaryKey(id)
 }
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class GetTodoResponse(
     val id: Int,
     val title: String,
