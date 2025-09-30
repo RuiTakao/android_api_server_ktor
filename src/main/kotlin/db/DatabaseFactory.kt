@@ -2,18 +2,13 @@ package com.android.server.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import javax.sql.DataSource
 
 object DatabaseFactory {
-    lateinit var db: Database
-        private set
-
     fun init() {
         val ds = hikari()
-        db = Database.Companion.connect(ds)
+        Database.connect(ds)
     }
 
     private fun hikari(): DataSource {
@@ -30,7 +25,4 @@ object DatabaseFactory {
         }
         return HikariDataSource(config)
     }
-
-    suspend fun <T> dbQuery(block: suspend () -> T): T =
-        newSuspendedTransaction(Dispatchers.IO, db) { block() }
 }

@@ -8,14 +8,17 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import org.koin.ktor.ext.inject
 
-fun Application.todoRoutes(repository: TodoRepository) {
+fun Application.todoRoutes() {
+    val repository by inject<TodoRepository>()
+
     routing {
         route("/todos") {
             get("/todo_list") {
-                val todoList: List<GetTodoResponse> = repository.getTodoList()
-                log.info("todoList: $todoList")
-                call.respond(todoList)
+                val list: List<GetTodoResponse> = repository.getTodoList()
+                log.info("todoList: $list")
+                call.respond(list)
             }
         }
     }
