@@ -1,14 +1,16 @@
 package com.android.server
 
-import io.ktor.serialization.kotlinx.json.json
+import com.android.server.di.appModule
+import com.android.server.di.repositoryModule
+import com.android.server.routes.todoRoutes
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.netty.EngineMain
-import io.ktor.server.plugins.calllogging.CallLogging
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.request.path
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
+import io.ktor.server.netty.*
+import io.ktor.server.plugins.calllogging.*
+import io.ktor.server.plugins.contentnegotiation.*
+import org.koin.dsl.module
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
 
 fun main() {
@@ -16,24 +18,17 @@ fun main() {
 }
 
 fun Application.module() {
-    DatabaseFactory.init()
+    install(CallLogging) { level = Level.INFO }
+    install(ContentNegotiation) { json() }
 
-    install(CallLogging) {
-        level = Level.INFO
-        filter { call -> call.request.path().startsWith("/") }
+    install(Koin) {
+        slf4jLogger()
+        modules(
+            module { single<ApplicationEnvironment> { environment } },
+            appModule,
+            repositoryModule
+        )
     }
 
-    install(ContentNegotiation) {
-        json()
-    }
-
-    val repository = TodoRepository()
-
-    routing {
-        get("/todos/todo_list") {
-            val todoList: List<GetTodoResponse> = repository.getTodoList()
-            log.info("todoList: $todoList")
-            call.respond(todoList)
-        }
-    }
+    todoRoutes()
 }
