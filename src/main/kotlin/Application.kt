@@ -1,13 +1,39 @@
-package com.android
+package com.android.server
 
--server
-
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
+import io.ktor.server.netty.EngineMain
+import io.ktor.server.plugins.calllogging.CallLogging
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.request.path
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
+import org.slf4j.event.Level
 
-fun main(args: Array<String>) {
-    io.ktor.server.netty.EngineMain.main(args)
+fun main() {
+    EngineMain.main(emptyArray())
 }
 
 fun Application.module() {
-    configureRouting()
+    DatabaseFactory.init()
+
+    install(CallLogging) {
+        level = Level.INFO
+        filter { call -> call.request.path().startsWith("/") }
+    }
+
+    install(ContentNegotiation) {
+        json()
+    }
+
+    val repository = TodoRepository()
+
+    routing {
+        get("/todos/todo_list") {
+            val todoList: List<GetTodoResponse> = repository.getTodoList()
+            log.info("todoList: $todoList")
+            call.respond(todoList)
+        }
+    }
 }
