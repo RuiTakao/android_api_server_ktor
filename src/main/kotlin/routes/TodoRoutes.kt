@@ -2,6 +2,8 @@ package com.android.server.routes
 
 import com.android.server.domain.model.todo.CreateTodoRequest
 import com.android.server.domain.model.todo.GetTodoResponse
+import com.android.server.domain.model.todo.UpdateTodoDoneRequest
+import com.android.server.domain.model.todo.UpdateTodoRequest
 import com.android.server.domain.repository.TodoRepository
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -44,13 +46,15 @@ fun Application.todoRoutes() {
 
             put("/update/{id}") {
                 val id = call.parameters["id"]?.toIntOrNull()
-                // TODO create repository
+                val request = call.receive<UpdateTodoRequest>()
+                repository.update(id ?: -1, request)
                 call.respond(HttpStatusCode.Created)
             }
 
             put("/update_done/{id}") {
                 val id = call.parameters["id"]?.toIntOrNull()
-                // TODO create repository
+                val request = call.receive<UpdateTodoDoneRequest>()
+                repository.updateDone(id ?: -1, request)
                 call.respond(HttpStatusCode.Created)
             }
         }

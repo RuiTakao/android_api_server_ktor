@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdateTodoDoneRequest(
     val done: Boolean,
+    val deviceId: String,
     val updatedAt: String,
 )
