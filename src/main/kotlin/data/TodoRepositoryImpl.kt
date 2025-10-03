@@ -1,6 +1,7 @@
 package com.android.server.data
 
 import com.android.server.db.Todos
+import com.android.server.domain.model.todo.CreateTodoRequest
 import com.android.server.domain.model.todo.GetTodoResponse
 import com.android.server.domain.repository.TodoRepository
 import kotlinx.coroutines.Dispatchers
@@ -8,6 +9,7 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
@@ -37,5 +39,16 @@ internal class TodoRepositoryImpl : TodoRepository {
             .limit(1)
             .singleOrNull()
             ?.let { row(it) }
+    }
+
+    override suspend fun create(request: CreateTodoRequest): Int = db {
+        Todos.insert {
+            it[title] = request.title
+            it[memo] = request.memo
+            it[done] = false
+            it[deviceId] = request.deviceId
+            it[createdAt] = request.createdAt
+            it[updatedAt] = request.createdAt
+        } get Todos.id
     }
 }
