@@ -20,7 +20,6 @@ fun Application.toDeviceDataRoutes() {
         route("/devices") {
             post("/post") {
                 val request = call.receive<PostDeviceDataRequest>()
-                log.info("request: $request")
                 repository.postDeviceData(request)
                 call.respond(HttpStatusCode.Created)
             }
