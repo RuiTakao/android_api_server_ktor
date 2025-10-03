@@ -10,6 +10,7 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.koin.ktor.ext.inject
@@ -38,6 +39,18 @@ fun Application.todoRoutes() {
             post("/create") {
                 val request = call.receive<CreateTodoRequest>()
                 repository.create(request)
+                call.respond(HttpStatusCode.Created)
+            }
+
+            put("/update/{id}") {
+                val id = call.parameters["id"]?.toIntOrNull()
+                // TODO create repository
+                call.respond(HttpStatusCode.Created)
+            }
+
+            put("/update_done/{id}") {
+                val id = call.parameters["id"]?.toIntOrNull()
+                // TODO create repository
                 call.respond(HttpStatusCode.Created)
             }
         }
