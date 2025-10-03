@@ -2,6 +2,7 @@ package com.android.server
 
 import com.android.server.di.appModule
 import com.android.server.di.repositoryModule
+import com.android.server.routes.toDeviceDataRoutes
 import com.android.server.routes.todoRoutes
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -30,5 +31,6 @@ fun Application.module() {
         )
     }
 
+    toDeviceDataRoutes()
     todoRoutes()
 }
