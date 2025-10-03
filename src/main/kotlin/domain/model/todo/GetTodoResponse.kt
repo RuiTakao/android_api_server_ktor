@@ -8,5 +8,6 @@ data class GetTodoResponse(
     val title: String,
     val memo: String,
     val done: Boolean,
+    val deviceId: String,
     val createdAt: String,
 )

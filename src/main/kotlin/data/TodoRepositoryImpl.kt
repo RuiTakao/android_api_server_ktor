@@ -5,6 +5,9 @@ import com.android.server.domain.model.todo.GetTodoResponse
 import com.android.server.domain.repository.TodoRepository
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
@@ -14,12 +17,25 @@ internal class TodoRepositoryImpl : TodoRepository {
         title = row[Todos.title],
         memo = row[Todos.memo],
         done = row[Todos.done],
+        deviceId = row[Todos.deviceId],
         createdAt = row[Todos.createdAt],
     )
 
-    private suspend fun <T> db(block: suspend () -> T): T = newSuspendedTransaction(Dispatchers.IO) { block() }
+    private suspend fun <T> db(block: suspend () -> T): T =
+        newSuspendedTransaction(Dispatchers.IO) {
+            addLogger(StdOutSqlLogger)
+            block()
+        }
 
-    override suspend fun getTodoList(): List<GetTodoResponse> = db {
-        Todos.selectAll().map(::row)
+    override suspend fun getTodoList(deviceId: String): List<GetTodoResponse> = db {
+        Todos.selectAll().where { Todos.deviceId eq deviceId }.map(::row)
+    }
+
+    override suspend fun getTodo(id: Int, deviceId: String): GetTodoResponse? = db {
+        Todos
+            .selectAll().where { Todos.id eq id and (Todos.deviceId eq deviceId) }
+            .limit(1)
+            .singleOrNull()
+            ?.let { row(it) }
     }
 }

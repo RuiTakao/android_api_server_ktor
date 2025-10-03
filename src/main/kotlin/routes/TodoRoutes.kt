@@ -16,9 +16,19 @@ fun Application.todoRoutes() {
     routing {
         route("/todos") {
             get("/todo_list") {
-                val list: List<GetTodoResponse> = repository.getTodoList()
+                val deviceId = call.request.queryParameters["deviceId"]
+                val list: List<GetTodoResponse> = repository.getTodoList(deviceId ?: "")
                 log.info("todoList: $list")
                 call.respond(list)
+            }
+
+            get("/todo/{id}") {
+                val id = call.parameters["id"]?.toIntOrNull()
+                val deviceId = call.request.queryParameters["deviceId"]
+                val todo: GetTodoResponse? = repository.getTodo(id ?: -1, deviceId ?: "")
+                todo?.let {
+                    call.respond(todo)
+                }
             }
         }
     }
