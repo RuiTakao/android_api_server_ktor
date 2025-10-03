@@ -12,3 +12,11 @@ object Todos: Table("todos") {
     val updatedAt = varchar("updated_at", 50).default("")
     override val primaryKey = PrimaryKey(id)
 }
+
+object DeviceData: Table("devices") {
+    val id = integer("id").autoIncrement()
+    val deviceId = varchar("device_id", 50)
+    val deviceName = varchar("device_name", 50)
+    val createdAt = varchar("created_at", 50).default("")
+    override val primaryKey = PrimaryKey(Todos.id)
+}
