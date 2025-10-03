@@ -10,6 +10,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.log
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
@@ -56,6 +57,12 @@ fun Application.todoRoutes() {
                 val request = call.receive<UpdateTodoDoneRequest>()
                 repository.updateDone(id ?: -1, request)
                 call.respond(HttpStatusCode.Created)
+            }
+
+            delete("/delete/{id}") {
+                val id = call.parameters["id"]?.toIntOrNull()
+                // TODO create repository
+                call.respond(HttpStatusCode.OK)
             }
         }
     }
