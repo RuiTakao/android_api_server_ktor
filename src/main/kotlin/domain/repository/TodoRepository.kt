@@ -11,4 +11,5 @@ interface TodoRepository {
     suspend fun create(request: CreateTodoRequest): Int
     suspend fun update(id: Int, request: UpdateTodoRequest): Int
     suspend fun updateDone(id: Int, request: UpdateTodoDoneRequest): Int
+    suspend fun delete(id: Int): Int
 }

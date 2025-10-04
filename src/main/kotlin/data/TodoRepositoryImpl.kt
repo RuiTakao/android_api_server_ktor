@@ -8,9 +8,11 @@ import com.android.server.domain.model.todo.UpdateTodoRequest
 import com.android.server.domain.repository.TodoRepository
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -68,5 +70,9 @@ internal class TodoRepositoryImpl : TodoRepository {
             it[done] = request.done
             it[updatedAt] = request.updatedAt
         }
+    }
+
+    override suspend fun delete(id: Int): Int = db {
+        Todos.deleteWhere { Todos.id eq id }
     }
 }
