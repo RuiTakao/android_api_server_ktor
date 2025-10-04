@@ -61,7 +61,7 @@ fun Application.todoRoutes() {
 
             delete("/delete/{id}") {
                 val id = call.parameters["id"]?.toIntOrNull()
-                // TODO create repository
+                repository.delete(id ?: -1)
                 call.respond(HttpStatusCode.OK)
             }
         }
