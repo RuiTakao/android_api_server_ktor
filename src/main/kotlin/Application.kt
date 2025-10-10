@@ -6,6 +6,7 @@ import com.android.server.routes.toDeviceDataRoutes
 import com.android.server.routes.todoRoutes
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -25,7 +26,10 @@ fun Application.module() {
     install(Koin) {
         slf4jLogger()
         modules(
-            module { single<ApplicationEnvironment> { environment } },
+            module {
+                single<ApplicationEnvironment> { environment }
+                single<ApplicationConfig> { environment.config }
+            },
             appModule,
             repositoryModule
         )
