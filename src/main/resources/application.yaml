@@ -1,6 +1,16 @@
 ktor:
   application:
     modules:
-      - com.android-server.ApplicationKt.module
+      - com.android.server.ApplicationKt.module
   deployment:
     port: 8080
+
+db:
+  driver: com.mysql.cj.jdbc.Driver
+  jdbcUrl: jdbc:mysql://localhost:3306/test_db?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo
+  username: root
+  password: rootpass
+  maximumPoolSize: 10
+  isAutoCommit: false
+  transactionIsolation: TRANSACTION_REPEATABLE_READ
+  initializationFailTimeout: -1
