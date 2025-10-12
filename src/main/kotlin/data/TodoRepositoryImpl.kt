@@ -35,10 +35,12 @@ internal class TodoRepositoryImpl : TodoRepository {
         }
 
     override suspend fun getTodoList(deviceId: String): List<GetTodoResponse> = db {
+        if (deviceId.isBlank()) return@db emptyList()
         Todos.selectAll().where { Todos.deviceId eq deviceId }.map(::row)
     }
 
     override suspend fun getTodo(id: Int, deviceId: String): GetTodoResponse? = db {
+        if (deviceId.isBlank()) return@db null
         Todos
             .selectAll().where { Todos.id eq id and (Todos.deviceId eq deviceId) }
             .limit(1)
